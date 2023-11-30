@@ -1,5 +1,7 @@
 #version 460
 
+out vec4 fragColor;
+
 uniform sampler2DArray albedoMap;
 
 in vec3 fragPosition;
@@ -39,5 +41,5 @@ void main(void) {
     if (albedo.a == 0.0f)
         discard;
 
-    gl_FragColor = albedo * vec4(fragLight, 1.0f);
+    fragColor = albedo * vec4(fragLight, 1.0f);
 }

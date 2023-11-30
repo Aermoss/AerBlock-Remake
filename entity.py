@@ -20,6 +20,7 @@ class Entity:
         self.collider = collider.Collider()
         self.grounded = False
         self.flying = False
+        self.lastNormal = (0, 0, 0)
 
     def updateCollider(self):
         self.collider.x1 = self.position[0] - self.width / 2
@@ -57,7 +58,7 @@ class Entity:
             stepZ = 1 if adjustedVelocity[2] > 0 else -1
 
             stepsXZ = int(self.width / 2)
-            stepsY  = int(self.height)
+            stepsY = int(self.height)
 
             x, y, z = map(int, self.position)
             cx, cy, cz = [int(x + v) for x, v in zip(self.position, adjustedVelocity)]
@@ -100,6 +101,8 @@ class Entity:
 
             if normal[1] == 1:
                 self.grounded = True
+
+            self.lastNormal = normal
 
         self.position = [x + v * deltaTime for x, v in zip(self.position, self.velocity)]
         gravity = flyingAccel if self.flying else gravityAccel

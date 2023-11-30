@@ -64,8 +64,12 @@ class Player(entity.Entity):
 
                 self.state[key] = True
 
-        if (self.window.input.getKey(moss.KEY_LEFT_CONTROL) or self.targetSpeed == SPRINTING_SPEED) and self.window.input.getKey(moss.KEY_W):
-            self.targetSpeed = SPRINTING_SPEED
+        speed = glm.sqrt(glm.pow(self.velocity[0], 2) + glm.pow(self.velocity[2], 2))
+
+        if ((self.window.input.getKey(moss.KEY_LEFT_CONTROL) and speed > 2.0) or self.targetSpeed == SPRINTING_SPEED) \
+            and self.window.input.getKey(moss.KEY_W) and not self.window.input.getKey(moss.KEY_S):
+            if (self.lastNormal[0] or self.lastNormal[2]) and (speed < 2.0): self.targetSpeed = WALKING_SPEED
+            else: self.targetSpeed = SPRINTING_SPEED
 
         else:
             self.targetSpeed = WALKING_SPEED
