@@ -53,6 +53,7 @@ class App:
     def update(self, window):
         self.window.clear()
         self.player.proccessInputs()
+        self.player.updatePhysics()
         self.player.updateMatrices()
 
         if self.window.input.getKey(moss.KEY_R):
@@ -70,6 +71,7 @@ class App:
 
     def exit(self, window):
         self.shader.delete()
+        self.renderer.delete()
 
     def run(self):
         moss.run()

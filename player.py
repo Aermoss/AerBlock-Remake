@@ -34,8 +34,15 @@ class Player(entity.Entity):
         self.lastHoldTime = {moss.KEY_SPACE: 0, moss.KEY_W: 0}
         self.state = {moss.KEY_SPACE: False, moss.KEY_W: False}
 
+    def updatePhysics(self):
+        super().update(self.window.deltaTime)
+
     def proccessInputs(self):
         if self.window.width == 0: return
+        
+        if not moss.glfw.get_window_attrib(self.window.window, moss.glfw.FOCUSED) or self.window.input.getKey(moss.KEY_LEFT_ALT):
+            self.window.input.setCursorVisible(True)
+            return
 
         self.input = [
             (1 if self.window.input.getKey(moss.KEY_D) else 0) + (-1 if self.window.input.getKey(moss.KEY_A) else 0),
@@ -92,8 +99,6 @@ class Player(entity.Entity):
 
         if self.grounded:
             self.flying = False
-            
-        super().update(self.window.deltaTime)
 
         self.window.input.setCursorVisible(False)
         x, y = self.window.input.getCursorPosition()
@@ -104,11 +109,11 @@ class Player(entity.Entity):
         self.yaw += x_offset
         self.pitch -= y_offset
 
-        if self.pitch >= 89.9:
-            self.pitch = 89.9
+        if self.pitch >= 89.99:
+            self.pitch = 89.99
 
-        if self.pitch <= -89.9:
-            self.pitch = -89.9
+        if self.pitch <= -89.99:
+            self.pitch = -89.99
 
         self.window.input.setCursorPosition(self.window.width / 2, self.window.height / 2)
 
@@ -182,9 +187,9 @@ class Player(entity.Entity):
 
         self.velocity[1] = math.sqrt(2 * height * -entity.gravityAccel[1])
 
-    def updateMatrices(self):
+    def updateMatrices(self, updateFrustum = True):
         if self.window.width == 0: return
-
+        
         self.front = glm.normalize(glm.vec3(
             math.cos(glm.radians(self.yaw)) * math.cos(glm.radians(self.pitch)),
             math.sin(glm.radians(self.pitch)),
@@ -201,4 +206,5 @@ class Player(entity.Entity):
         self.shader.setUniformMatrix4fv("view", glm.value_ptr(view))
         self.shader.unuse()
 
-        self.updateFrustum(proj * view)
+        if updateFrustum:
+            self.updateFrustum(proj * view)

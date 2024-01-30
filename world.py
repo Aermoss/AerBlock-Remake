@@ -50,6 +50,18 @@ class World:
         # self.textureManager.generateMipmaps()
         # self.textureManager.unbind()
 
+        self.loadWorld()
+
+        for position in self.chunks:
+            self.initSkylight(self.chunks[position])
+
+        self.propagateIncrease(True)
+
+        for position in self.chunks:
+            self.chunks[position].updateSubchunks()
+            self.chunks[position].update()
+
+    def loadWorld(self):
         for x in range(2):
             for z in range(2):
                 chunkPosition = (x - 1, 0, z - 1)
@@ -69,15 +81,6 @@ class World:
                             elif j < 15: current_chunk.blocks[i, j, k] = 7
 
                 self.chunks[chunkPosition] = current_chunk
-
-        for position in self.chunks:
-            self.initSkylight(self.chunks[position])
-
-        self.propagateIncrease(True)
-
-        for position in self.chunks:
-            self.chunks[position].updateSubchunks()
-            self.chunks[position].update()
 
     def setBlock(self, position, number):
         x, y, z = position
