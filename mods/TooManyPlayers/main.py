@@ -1,4 +1,4 @@
-import aerics, imgui, moss, glm, random, pickle
+import aerics, imgui, moss, glm, random, pickle, socket
 import pyglet.gl as gl
 
 domainAPI = __import__("domain")
@@ -104,6 +104,12 @@ class TooManyPlayers(domainAPI.ModBase):
             _, self.client.port = imgui.input_text("Port", self.client.port, 512)
 
             if imgui.button("Connect"):
+                try:
+                    socket.inet_aton(self.client.ip)
+
+                except socket.error:
+                    self.client.ip = socket.gethostbyname(self.client.ip)
+
                 self.client.port = int(self.client.port)
                 self.client.connect()
                 self.connected = True
